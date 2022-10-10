@@ -1,6 +1,10 @@
 package com.example.recipeapp.domain;
 
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,12 +17,21 @@ public class Recipe {
     private Integer preparationTime;
     private Integer cookTime;
     private String url;
+    @Lob
     private String directions;
 
     @ManyToMany
     @JoinTable(name = "recipe_category", joinColumns = @JoinColumn(name = "recipie_id"),
                 inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories;
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
 
     @Enumerated(value = EnumType.STRING)
     private Difficulty difficulty;
@@ -27,7 +40,7 @@ public class Recipe {
     private  Byte[] image;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
-    private Set<Ingredient> ingredientSet;
+    private Set<Ingredient> ingredientSet = new HashSet<>();
     @OneToOne(cascade = CascadeType.ALL)
     private Notes notes;
 
@@ -85,6 +98,22 @@ public class Recipe {
 
     public void setDirections(String directions) {
         this.directions = directions;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
+
+    public Set<Ingredient> getIngredientSet() {
+        return ingredientSet;
+    }
+
+    public void setIngredientSet(Set<Ingredient> ingredientSet) {
+        this.ingredientSet = ingredientSet;
     }
 
     public void setId(Long id) {
